@@ -3,47 +3,22 @@
 namespace RVO
 {
 
-RVOPlanner::RVOPlanner(std::string simulation, int num_agent) : simulator(simulation), num_agent_(num_agent)
+RVOPlanner::RVOPlanner(std::string simulation) : simulator(simulation)
 {
     sim = new RVO::RVOSimulator();
-    for (int i = 0; i < num_agent_; i++)
-    {
-        std::string name = "obstacle" + std::to_string(i);
-        agents_name.push_back(name);
-    }
 };
 
 void RVOPlanner::setupScenario(float neighborDist, size_t maxNeighbors, float timeHorizon, float timeHorizonObst, float radius, float maxSpeed)
 {
-
-    // sim->setTimeStep(0.25f);
-
     sim->setAgentDefaults(neighborDist, maxNeighbors, timeHorizon, timeHorizonObst, radius, maxSpeed);
-
-    // sim->addAgent(RVO::Vector2(-50.0f, -50.0f));
-    // // sim->addAgent(RVO::Vector2(50.0f, -50.0f));
-    // // sim->addAgent(RVO::Vector2(50.0f, 50.0f));
-    // // sim->addAgent(RVO::Vector2(-50.0f, 50.0f));
-
-    // for (size_t i=0; i < sim->getNumAgents(); ++i){
-    //     goals.push_back(-sim->getAgentPosition(i));
-    // }
-
-    // std::vector<RVO::Vector2> vertices;
-
-    // vertices.push_back(RVO::Vector2(-7.0f, -20.0f));
-    // vertices.push_back(RVO::Vector2(7.0f, -20.0f));
-    // vertices.push_back(RVO::Vector2(7.0f, 20.0f));
-    // vertices.push_back(RVO::Vector2(-7.0f, 20.0f));
-
-    // sim->addObstacle(vertices);
-
-    // sim->processObstacles();
 }
+
+// set the goal manually
+// default: invert direction
+// random: change the goal every step
 
 void RVOPlanner::setGoal()
 {
-
     for (size_t i = 0; i < sim->getNumAgents(); ++i)
     {
         if (absSq(goals[i] - sim->getAgentPosition(i)) < goal_threshold)
@@ -54,17 +29,19 @@ void RVOPlanner::setGoal()
     }
 }
 
-void RVOPlanner::setGoal(float x, float y)
+void RVOPlanner::setGoal(std::vector<RVO::Vector2> set_goals)
 {
+    goals.clear();
+    goals.assign(set_goals.begin(), set_goals.end());
 }
 
-void RVOPlanner::randGoal(int x_min, int x_max, int y_min, int y_max)
+void RVOPlanner::randGoal(int x_min, int x_max, int y_min, int y_max, std::string model)
 {
     std::srand((unsigned)time(NULL));
-    
+
     for (size_t i = 0; i < sim->getNumAgents(); ++i)
     {
-        
+
         float x = x_min + std::rand() % (x_max - x_min + 1);
         float y = y_min + std::rand() % (y_max - y_min + 1);
         int rand = std::rand() % 10;
@@ -72,18 +49,25 @@ void RVOPlanner::randGoal(int x_min, int x_max, int y_min, int y_max)
         // float y = (rand() % (limit_y + 1));
         if (IfInitial == false)
             goals.push_back(Vector2(x, y));
-        // else if (absSq(goals[i] - sim->getAgentPosition(i)) < goal_threshold)
-        else if (rand > 2)
-            goals[i] = (Vector2(x, y));
+        else if (model == "default")
+        {
+            if (absSq(goals[i] - sim->getAgentPosition(i)) < goal_threshold)
+                goals[i] = (Vector2(x, y));
+        }
+        else if (model == "random")
+        {
+            if (rand > 2)
+                goals[i] = (Vector2(x, y));       
+        }
     }
 }
 
 void RVOPlanner::setInitial()
 {
-    if ((goals.size() != 0 ) && (sim->agents_.size() != 0))
+    if ((goals.size() != 0) && (sim->agents_.size() != 0))
         IfInitial = true;
     else
-        IfInitial = false;     
+        IfInitial = false;
 }
 
 void RVOPlanner::setPreferredVelocities()
@@ -102,16 +86,18 @@ void RVOPlanner::setPreferredVelocities()
     }
 }
 
-
 void RVOPlanner::updateState_gazebo(gazebo_msgs::ModelStates::ConstPtr model_msg)
 {
     if (simulator == "gazebo")
     {
         auto models_name = model_msg->name;
+        int num = models_name.size();
 
-        for (int i = 0; i < num_agent_; i++)
+        for (int i = 0; i < num; i++)
         {
-            auto iter_agent = std::find(models_name.begin(), models_name.end(), agents_name[i]);
+            std::string agent_name = "agent" + std::to_string(i);
+
+            auto iter_agent = std::find(models_name.begin(), models_name.end(), agent_name);
             int agent_index = iter_agent - models_name.begin();
             if (iter_agent != models_name.end())
             {

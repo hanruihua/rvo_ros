@@ -17,15 +17,15 @@ namespace RVO {
 
     class RVOPlanner{
     public:
-        RVOPlanner(std::string simulation, int num_agent);
+        RVOPlanner(std::string simulation);
 
         void setupScenario(float neighborDist, size_t maxNeighbors, float timeHorizon, float timeHorizonObst, float radius, float maxSpeed);
 
         void updateState_gazebo(gazebo_msgs::ModelStates::ConstPtr model_msg);
 
         void setGoal();
-        void randGoal(int x_min, int x_max, int y_min, int y_max);
-        void setGoal(float x, float y);
+        void randGoal(int x_min, int x_max, int y_min, int y_max, std::string model="default");
+        void setGoal(std::vector <RVO::Vector2> set_goals);
         void setInitial();
         void setPreferredVelocities();
 
@@ -37,8 +37,6 @@ namespace RVO {
 
         RVO::RVOSimulator* sim;
         std::string simulator;
-        std::vector<std::string> agents_name;
-        int num_agent_;
         std::vector <RVO::Vector2> goals;
         bool IfInitial = false;
         std::vector<RVO::Vector2 *> newVelocities;
