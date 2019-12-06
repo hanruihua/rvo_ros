@@ -24,9 +24,9 @@ include_directories(
 
 # file(GLOB RVO_LIB_DIRS "rvo_lib/nav_rvo.cpp")
 
-add_library(rvo_lib SHARED rvo_lib/nav_rvo.cpp rvo_lib/RVOSimulator.cpp rvo_lib/Agent.cpp rvo_lib/KdTree.cpp rvo_lib/Obstacle.cpp)
+add_library(rvolib SHARED rvo_lib/nav_rvo.cpp rvo_lib/RVOSimulator.cpp rvo_lib/Agent.cpp rvo_lib/KdTree.cpp rvo_lib/Obstacle.cpp)
 
-add_executable(rvo_gazebo rvo_gazebo.cpp)
-target_link_libraries(rvo_gazebo ${catkin_LIBRARIES} rvo_lib)
+add_executable(rvo_node_gazebo src/rvo_node_gazebo.cpp)
+target_link_libraries(rvo_node_gazebo ${catkin_LIBRARIES} rvolib)
 
 #target_link_libraries(rvo_test RVO)
