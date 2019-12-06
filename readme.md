@@ -1,8 +1,35 @@
-# Optimal Reciprocal Collision Avoidance 
-
-[[paper]](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.162.265&rep=rep1&type=pdf)
+# rvo_ros package
 
 ## Introduction
+
+This ros package is derived from the ORCA library ([lib](http://gamma.cs.unc.edu/RVO2/)).
+
+## Environment
+
+- Ubuntu 18.0
+- ros Melodic
+
+## Install
+
+> git clone https://github.com/hanruihua/rvo_ros.git  
+> cd ~/catkin_ws  
+> catkin_make  
+
+## Usage
+
+> rosrun rvo_ros rosrun rvo_ros rvo_node_gazebo  
+
+## Topics
+
+- Subscribed Topic
+
+/rvo/model_states ([gazebo_msgs/ModelStates](http://docs.ros.org/jade/api/gazebo_msgs/html/msg/ModelStates.html))
+
+- Published Topic
+
+/rvo_vel ([gazebo_msgs/ModelStates](http://docs.ros.org/jade/api/gazebo_msgs/html/msg/ModelStates.html))
+
+## Overview ([[paper]](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.162.265&rep=rep1&type=pdf))
 
 The approach for reciprocal n-body collision avoidance, where multiple mobile robots need to avoid collisions with each other while moving in a common workspace.
 
@@ -23,24 +50,7 @@ Limitation:
 1. The assumption of perfect sensing is hard to perform in real world because of the uncertainties.
 2. Too many parameters to construct the complex model.  
 
-## Step
 
-### Initialization
-
-1. environment:
-    - time horizon(float):  
-2. robot:
-    - position (vector): current position in 2d environment.
-    - current velocity(vector, x,y): current velocity respect to x and y axis.
-
-### set scenario
-
-1. set time step
-2. set default parameter of robots: 
-    - preferred velocity
-    - 
-3. set robot initial position
-4. 
 
 
 
