@@ -57,7 +57,7 @@ void RVOPlanner::randGoal(int x_min, int x_max, int y_min, int y_max, std::strin
         else if (model == "random")
         {
             if (rand > 2)
-                goals[i] = (Vector2(x, y));       
+                goals[i] = (Vector2(x, y));
         }
     }
 }
@@ -108,6 +108,8 @@ void RVOPlanner::updateState_gazebo(gazebo_msgs::ModelStates::ConstPtr model_msg
                     sim->agents_[i]->position_ = RVO::Vector2(obs_x, obs_y);
                 else
                     sim->addAgent(RVO::Vector2(obs_x, obs_y));
+
+                // sim->agents_[i]->quater = model_msg->pose[agent_index].orientation;   
             }
         }
     }

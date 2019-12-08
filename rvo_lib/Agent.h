@@ -42,6 +42,7 @@
 #include "RVOSimulator.h"
 #include "nav_rvo.h"
 
+
 namespace RVO {
 
 	// class Line {
@@ -117,6 +118,7 @@ namespace RVO {
 		float timeHorizon_;
 		float timeHorizonObst_;
 		Vector2 velocity_;
+		
 
 		size_t id_;
 

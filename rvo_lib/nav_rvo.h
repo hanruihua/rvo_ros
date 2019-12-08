@@ -1,5 +1,5 @@
-#ifndef NAV_ROV_H
-#define NAV_ROV_H
+#ifndef NAV_ROV_H_
+#define NAV_ROV_H_
 
 #include "Agent.h"
 #include "KdTree.h"
@@ -44,24 +44,12 @@ namespace RVO {
         int limit_goal_x;
         int limit_goal_y;
 
+
+
         friend class Agent;
         friend class KdTree;
         friend class Obstacle;
     };
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+}
 
 #endif
