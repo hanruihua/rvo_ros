@@ -50,12 +50,12 @@ void rvo_velCallback(const gazebo_msgs::ModelStates::ConstPtr& sub_msg)
         float x = new_velocities[i]->x();
         float y = new_velocities[i]->y();
 
-        float speed = sqrt(x * x + y * y);
+        // float speed = sqrt(x * x + y * y);
 
-        float ratio = vel_ratio(speed, 0.2f, 0.3f);
+        // float ratio = vel_ratio(speed, 0.2f, 0.3f);
 
-        new_vel.linear.x = x * ratio;
-        new_vel.linear.y = y * ratio;
+        new_vel.linear.x = x;
+        new_vel.linear.y = y;
 
         msg_pub.name.push_back(agent_name);
         msg_pub.twist.push_back(new_vel);
