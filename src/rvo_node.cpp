@@ -1,4 +1,4 @@
-#include "rvo_node_gazebo.h"
+#include "rvo_node.h"
 
 int main(int argc, char **argv)
 {
@@ -29,14 +29,23 @@ void rvo_velCallback(const gazebo_msgs::ModelStates::ConstPtr& sub_msg)
     rvo->setPreferredVelocities();
 
     std::vector<RVO::Vector2*> new_velocities = rvo->step();
- 
+    
+    auto models_name = sub_msg->name;
+
     msg_pub.name.clear();
     msg_pub.twist.clear();
+    msg_pub.pose.clear();
 
     for (int i = 0; i < new_velocities.size(); i++)
     {
         geometry_msgs::Twist new_vel;
+        geometry_msgs::Pose rvo_pose;
         std::string agent_name = "angent" + std::to_string(i);
+
+        auto iter_agent = std::find(models_name.begin(), models_name.end(), agent_name);
+        int agent_index = iter_agent - models_name.begin();
+
+        rvo_pose = sub_msg->pose[agent_index];
 
         float x = new_velocities[i]->x();
         float y = new_velocities[i]->y();
@@ -50,6 +59,7 @@ void rvo_velCallback(const gazebo_msgs::ModelStates::ConstPtr& sub_msg)
 
         msg_pub.name.push_back(agent_name);
         msg_pub.twist.push_back(new_vel);
+        msg_pub.pose.push_back(rvo_pose);
     }
 }
 

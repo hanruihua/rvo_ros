@@ -3,6 +3,7 @@
 
 #include "ros/ros.h"
 #include "geometry_msgs/Twist.h"
+#include "geometry_msgs/Pose.h"
 #include "gazebo_msgs/ModelStates.h"
 #include <string>
 #include "../rvo_lib/nav_rvo.h"
