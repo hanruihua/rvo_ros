@@ -95,7 +95,7 @@ void RVOPlanner::updateState_gazebo(gazebo_msgs::ModelStates::ConstPtr model_msg
 
         for (int i = 0; i < num; i++)
         {
-            std::string agent_name = "agent" + std::to_string(i);
+            std::string agent_name = "agent" + std::to_string(i+1);
 
             auto iter_agent = std::find(models_name.begin(), models_name.end(), agent_name);
             int agent_index = iter_agent - models_name.begin();
