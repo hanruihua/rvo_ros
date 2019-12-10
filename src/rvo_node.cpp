@@ -12,7 +12,7 @@ int main(int argc, char **argv)
     ros::Rate loop_rate(10);
  
     rvo = new RVO::RVOPlanner("gazebo");
-    rvo->setupScenario(4.0f, 10, 10.0f, 5.0f, 0.25f, 0.3f);
+    rvo->setupScenario(4.0f, 10, 14.0f, 5.0f, 0.25f, 0.3f);
 
     while (ros::ok())
     {
@@ -25,7 +25,7 @@ void rvo_velCallback(const gazebo_msgs::ModelStates::ConstPtr& sub_msg)
 {
     // std::cout<<num_agent<<std::endl;
     rvo->updateState_gazebo(sub_msg); // read the message
-    rvo->randGoal(0, 7, 0, 4);   // set the goals
+    rvo->randGoal(0, 4, 0, 4, "random");   // set the goals
     rvo->setInitial();
     rvo->setPreferredVelocities();
 
