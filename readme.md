@@ -9,8 +9,6 @@ This ros package is derived from the ORCA library ([lib](http://gamma.cs.unc.edu
 - Ubuntu 18.0
 - ros Melodic
 
-
-
 ## Install
 
 > git clone https://github.com/hanruihua/rvo_ros.git  
@@ -19,7 +17,7 @@ This ros package is derived from the ORCA library ([lib](http://gamma.cs.unc.edu
 
 ## Usage
 
-> rosrun rvo_ros rosrun rvo_ros rvo_node_gazebo  
+> rosrun rvo_ros rvo_node
 
 ## Topics
 
