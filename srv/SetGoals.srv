@@ -1,0 +1,5 @@
+string model
+geometry_msgs/Point[] coordinates
+---
+
+
