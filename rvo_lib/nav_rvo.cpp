@@ -1,9 +1,11 @@
 #include "nav_rvo.h"
 
+#include <utility>
+
 namespace RVO
 {
 
-RVOPlanner::RVOPlanner(std::string simulation) : simulator(simulation)
+RVOPlanner::RVOPlanner(std::string simulation) : simulator(std::move(simulation))
 {
     sim = new RVO::RVOSimulator();
 };
@@ -29,26 +31,49 @@ void RVOPlanner::setGoal()
     }
 }
 
-void RVOPlanner::setGoal(std::vector<RVO::Vector2> set_goals)
+void RVOPlanner::setGoal(std::vector<geometry_msgs::Point> set_goals)
 {
     goals.clear();
-    goals.assign(set_goals.begin(), set_goals.end());
+    int num_agent = sim->agents_.size();
+    if (set_goals.size() < num_agent)
+        std::cout << "error:The num of goals is less than agents" << std::endl;
+    else
+    {
+        for (int i = 0; i < num_agent; i++)
+        {
+            float x = set_goals[i].x;
+            float y = set_goals[i].y;
+
+            goals.emplace_back(Vector2(x, y));
+            std::cout<<"goal"+ std::to_string(i+1) + ":["<<x<<","<<y<<"]"<<std::endl;
+        }
+    }
 }
 
-void RVOPlanner::randGoal(int x_min, int x_max, int y_min, int y_max, std::string model)
+void RVOPlanner::randGoal(const float limit_goal[4], const std::string &model)
 {
-    std::srand((unsigned)time(NULL));
+
+    float x_min = limit_goal[0];
+    float x_max = limit_goal[1];
+    float y_min = limit_goal[2];
+    float y_max = limit_goal[3];
+
+    std::random_device rd;
+    std::default_random_engine e(rd());
+    std::uniform_real_distribution<float> ux(x_min, x_max);
+    std::uniform_real_distribution<float> uy(y_min, y_max);
+    std::uniform_int_distribution<int> ur(0, 10);
 
     for (size_t i = 0; i < sim->getNumAgents(); ++i)
     {
 
-        float x = x_min + std::rand() % (x_max - x_min + 1);
-        float y = y_min + std::rand() % (y_max - y_min + 1);
-        int rand = std::rand() % 10;
-        // float x = (rand() % (limit_x + 1));
-        // float y = (rand() % (limit_y + 1));
-        if (IfInitial == false)
-            goals.push_back(Vector2(x, y));
+        float x = ux(e);
+        float y = uy(e);
+        int rand = ur(e);
+
+        if (!IfInitial)
+            goals.emplace_back(x, y);
+
         else if (model == "default")
         {
             if (absSq(goals[i] - sim->getAgentPosition(i)) < goal_threshold)
@@ -56,7 +81,7 @@ void RVOPlanner::randGoal(int x_min, int x_max, int y_min, int y_max, std::strin
         }
         else if (model == "random")
         {
-            if (rand > 2)
+            if (rand > 8)
                 goals[i] = (Vector2(x, y));
         }
     }
@@ -64,10 +89,7 @@ void RVOPlanner::randGoal(int x_min, int x_max, int y_min, int y_max, std::strin
 
 void RVOPlanner::setInitial()
 {
-    if ((goals.size() != 0) && (sim->agents_.size() != 0))
-        IfInitial = true;
-    else
-        IfInitial = false;
+    IfInitial = (!goals.empty()) && (!sim->agents_.empty());
 }
 
 void RVOPlanner::setPreferredVelocities()
@@ -95,7 +117,7 @@ void RVOPlanner::updateState_gazebo(gazebo_msgs::ModelStates::ConstPtr model_msg
 
         for (int i = 0; i < num; i++)
         {
-            std::string agent_name = "agent" + std::to_string(i+1);
+            std::string agent_name = "agent" + std::to_string(i + 1);
 
             auto iter_agent = std::find(models_name.begin(), models_name.end(), agent_name);
             int agent_index = iter_agent - models_name.begin();
@@ -104,12 +126,12 @@ void RVOPlanner::updateState_gazebo(gazebo_msgs::ModelStates::ConstPtr model_msg
                 float obs_x = model_msg->pose[agent_index].position.x;
                 float obs_y = model_msg->pose[agent_index].position.y;
 
-                if (IfInitial == true)
+                if (IfInitial)
                     sim->agents_[i]->position_ = RVO::Vector2(obs_x, obs_y);
                 else
                     sim->addAgent(RVO::Vector2(obs_x, obs_y));
 
-                // sim->agents_[i]->quater = model_msg->pose[agent_index].orientation;   
+                // sim->agents_[i]->quater = model_msg->pose[agent_index].orientation;
             }
         }
     }
@@ -122,11 +144,11 @@ std::vector<RVO::Vector2 *> RVOPlanner::step()
     sim->kdTree_->buildAgentTree();
     newVelocities.clear();
 
-    for (int i = 0; i < static_cast<int>(sim->agents_.size()); ++i)
+    for (auto & agent : sim->agents_)
     {
-        sim->agents_[i]->computeNeighbors();
-        sim->agents_[i]->computeNewVelocity();
-        RVO::Vector2 *new_vel = new Vector2(sim->agents_[i]->newVelocity_.x(), sim->agents_[i]->newVelocity_.y());
+        agent->computeNeighbors();
+        agent->computeNewVelocity();
+        auto *new_vel = new Vector2(agent->newVelocity_.x(), agent->newVelocity_.y());
         newVelocities.push_back(new_vel);
     }
 

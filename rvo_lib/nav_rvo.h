@@ -6,8 +6,10 @@
 #include "Definitions.h"
 #include "Obstacle.h"
 #include "gazebo_msgs/ModelStates.h"
+#include "geometry_msgs/Point.h"
 #include "RVOSimulator.h"
 #include <string>
+#include <random>
 
 namespace RVO {
 
@@ -24,14 +26,12 @@ namespace RVO {
         void updateState_gazebo(gazebo_msgs::ModelStates::ConstPtr model_msg);
 
         void setGoal();
-        void randGoal(int x_min, int x_max, int y_min, int y_max, std::string model="default");
-        void setGoal(std::vector <RVO::Vector2> set_goals);
+        void randGoal(const float limit_goal[4], const std::string &model="default");
+        void setGoal(std::vector<geometry_msgs::Point> set_goals);
         void setInitial();
         void setPreferredVelocities();
 
         std::vector<RVO::Vector2*>  step();
-
-        ~RVOPlanner();
 
     private:
 
@@ -41,10 +41,6 @@ namespace RVO {
         bool IfInitial = false;
         std::vector<RVO::Vector2 *> newVelocities;
         float goal_threshold = 0.01;
-        int limit_goal_x;
-        int limit_goal_y;
-
-
 
         friend class Agent;
         friend class KdTree;
