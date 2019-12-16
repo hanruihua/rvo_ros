@@ -2,14 +2,26 @@
 
 int main(int argc, char **argv)
 {
-   
+
     ros::init(argc, argv, "rvo_node");
     ros::NodeHandle n;
-    rvo_node_pub = n.advertise<gazebo_msgs::ModelStates>("rvo_vel",1000);
+    rvo_node_pub = n.advertise<gazebo_msgs::ModelStates>("rvo_vel", 1000);
     ros::Subscriber sub = n.subscribe("/rvo/model_states", 1000, rvo_velCallback);
     ros::ServiceServer service = n.advertiseService("set_rvo_goals", set_goals);
     ros::Rate loop_rate(10);
-    
+
+    if ((argc > 1) && (argc % 2 == 0))
+    {
+        int num_init_point = argc - 1;
+        for (int i = 1; i < num_init_point + 1; i = i + 2)
+        {
+            geometry_msgs::Point point;
+            point.x = atof(argv[i]);
+            point.y = atof(argv[i + 1]);
+            rvo_goals.push_back(point);
+        }
+    }
+
     rvo = new RVO::RVOPlanner("gazebo");
     rvo->setupScenario(4.0f, 10, 18.0f, 5.0f, 0.25f, 0.2f);
     rvo_goals_init();
@@ -27,12 +39,12 @@ bool set_goals(rvo_ros::SetGoals::Request &req, rvo_ros::SetGoals::Response &res
         motion_model = req.model;
 
         if (!rvo_goals.empty())
-           rvo_goals.clear();
+            rvo_goals.clear();
 
-       for (const auto & coordinate : req.coordinates)
-       {
+        for (const auto &coordinate : req.coordinates)
+        {
             rvo_goals.push_back(coordinate);
-       }
+        }
 
         res.num_goal = rvo_goals.size();
 
@@ -55,27 +67,31 @@ bool set_goals(rvo_ros::SetGoals::Request &req, rvo_ros::SetGoals::Response &res
             limit_goal[3] = req.coordinates[1].y; // y_max
 
             res.num_goal = num_agent;
-            std::cout<<"Current number of agent: "<<num_agent<<std::endl;
+            std::cout << "Current number of agent: " << num_agent << std::endl;
             return true;
         }
     }
 
-    std::cout<<"The specific model is wrong"<<std::endl;
+    std::cout << "The specific model is wrong" << std::endl;
     return false;
 }
 
 void rvo_goals_init()
 {
-    for (int i=0; i<num_max; i++)
+
+    if (rvo_goals.empty())
     {
-        geometry_msgs::Point point;
-        point.x = float(i);
-        point.y = 1.0;
-        rvo_goals.push_back(point);
+        for (int i = 0; i < num_max; i++)
+        {
+            geometry_msgs::Point point;
+            point.x = float(i);
+            point.y = 1.0;
+            rvo_goals.push_back(point);
+        }
     }
 }
 
-void rvo_velCallback(const gazebo_msgs::ModelStates::ConstPtr& sub_msg)
+void rvo_velCallback(const gazebo_msgs::ModelStates::ConstPtr &sub_msg)
 {
     // std::cout<<num_agent<<std::endl;
     rvo->updateState_gazebo(sub_msg); // read the message
@@ -87,8 +103,8 @@ void rvo_velCallback(const gazebo_msgs::ModelStates::ConstPtr& sub_msg)
     rvo->setInitial();
     rvo->setPreferredVelocities();
 
-    std::vector<RVO::Vector2*> new_velocities = rvo->step();
-    
+    std::vector<RVO::Vector2 *> new_velocities = rvo->step();
+
     auto models_name = sub_msg->name;
 
     msg_pub.name.clear();
@@ -99,7 +115,7 @@ void rvo_velCallback(const gazebo_msgs::ModelStates::ConstPtr& sub_msg)
 
     if (num_agent != copy_num_agent)
     {
-        std::cout<<"The num of agents is" + std::to_string(num_agent)<<std::endl;
+        std::cout << "The num of agents is" + std::to_string(num_agent) << std::endl;
         copy_num_agent = num_agent;
     }
 
@@ -107,7 +123,7 @@ void rvo_velCallback(const gazebo_msgs::ModelStates::ConstPtr& sub_msg)
     {
         geometry_msgs::Twist new_vel;
         geometry_msgs::Pose rvo_pose;
-        std::string agent_name = "agent" + std::to_string(i+1);
+        std::string agent_name = "agent" + std::to_string(i + 1);
 
         auto iter_agent = std::find(models_name.begin(), models_name.end(), agent_name);
         int agent_index = iter_agent - models_name.begin();
@@ -118,7 +134,7 @@ void rvo_velCallback(const gazebo_msgs::ModelStates::ConstPtr& sub_msg)
         }
         else
         {
-            std::cout<<"There is no agent" + agent_name << std::endl;
+            std::cout << "There is no agent" + agent_name << std::endl;
         }
 
         float x = new_velocities[i]->x();
@@ -140,5 +156,5 @@ void rvo_velCallback(const gazebo_msgs::ModelStates::ConstPtr& sub_msg)
 
 float vel_ratio(float vel, float lo, float hi)
 {
-    return (vel < lo) ? lo/vel : (vel > hi) ? hi/vel : 1;
+    return (vel < lo) ? lo / vel : (vel > hi) ? hi / vel : 1;
 }
