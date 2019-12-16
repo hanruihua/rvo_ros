@@ -10,7 +10,7 @@ int main(int argc, char **argv)
     ros::ServiceServer service = n.advertiseService("set_rvo_goals", set_goals);
     ros::Rate loop_rate(10);
 
-    if ((argc > 1) && (argc % 2 == 0))
+    if ((argc > 1) && (argc % 2 == 1))
     {
         int num_init_point = argc - 1;
         for (int i = 1; i < num_init_point + 1; i = i + 2)
@@ -106,6 +106,7 @@ void rvo_velCallback(const gazebo_msgs::ModelStates::ConstPtr &sub_msg)
     std::vector<RVO::Vector2 *> new_velocities = rvo->step();
 
     auto models_name = sub_msg->name;
+    int total_num = models_name.size();
 
     msg_pub.name.clear();
     msg_pub.twist.clear();
@@ -119,7 +120,9 @@ void rvo_velCallback(const gazebo_msgs::ModelStates::ConstPtr &sub_msg)
         copy_num_agent = num_agent;
     }
 
-    for (int i = 0; i < num_agent; i++)
+    int count = 0;
+
+    for (int i = 0; i < total_num; i++)
     {
         geometry_msgs::Twist new_vel;
         geometry_msgs::Pose rvo_pose;
@@ -131,25 +134,24 @@ void rvo_velCallback(const gazebo_msgs::ModelStates::ConstPtr &sub_msg)
         if (iter_agent != models_name.end())
         {
             rvo_pose = sub_msg->pose[agent_index];
+
+            float x = new_velocities[count]->x();
+            float y = new_velocities[count]->y();
+
+            // float speed = sqrt(x * x + y * y);
+
+            // float ratio = vel_ratio(speed, 0.2f, 0.3f);
+
+            new_vel.linear.x = x;
+            new_vel.linear.y = y;
+
+            msg_pub.name.push_back(agent_name);
+            msg_pub.twist.push_back(new_vel);
+            msg_pub.pose.push_back(rvo_pose);
+
+            count++;
+            std::cout << "Current " << agent_name << std::endl;
         }
-        else
-        {
-            std::cout << "There is no agent" + agent_name << std::endl;
-        }
-
-        float x = new_velocities[i]->x();
-        float y = new_velocities[i]->y();
-
-        // float speed = sqrt(x * x + y * y);
-
-        // float ratio = vel_ratio(speed, 0.2f, 0.3f);
-
-        new_vel.linear.x = x;
-        new_vel.linear.y = y;
-
-        msg_pub.name.push_back(agent_name);
-        msg_pub.twist.push_back(new_vel);
-        msg_pub.pose.push_back(rvo_pose);
     }
     rvo_node_pub.publish(msg_pub);
 }
