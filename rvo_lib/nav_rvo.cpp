@@ -50,6 +50,32 @@ void RVOPlanner::setGoal(std::vector<geometry_msgs::Point> set_goals)
     }
 }
 
+
+void RVOPlanner::randomOnceGoal(const float limit_goal[4])
+{
+    float x_min = limit_goal[0];
+    float x_max = limit_goal[1];
+    float y_min = limit_goal[2];
+    float y_max = limit_goal[3];
+
+    std::random_device rd;
+    std::default_random_engine e(rd());
+    std::uniform_real_distribution<float> ux(x_min, x_max);
+    std::uniform_real_distribution<float> uy(y_min, y_max);
+    std::uniform_int_distribution<int> ur(0, 10);
+
+    for (size_t i = 0; i < sim->getNumAgents(); ++i)
+    {
+
+        float x = ux(e);
+        float y = uy(e);
+        int rand = ur(e);
+    
+        goals[i] = (Vector2(x, y));
+    }
+       
+}
+
 void RVOPlanner::randGoal(const float limit_goal[4], const std::string &model)
 {
 
