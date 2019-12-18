@@ -23,7 +23,7 @@ int main(int argc, char **argv)
     }
 
     rvo = new RVO::RVOPlanner("gazebo");
-    rvo->setupScenario(4.0f, 10, 18.0f, 5.0f, 0.25f, 0.2f);
+    rvo->setupScenario(4.0f, 10, 18.0f, 5.0f, 0.25f, 0.3f);
     rvo_goals_init();
     while (ros::ok())
     {
