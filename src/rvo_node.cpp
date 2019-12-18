@@ -68,7 +68,7 @@ bool set_goals(rvo_ros::SetGoals::Request &req, rvo_ros::SetGoals::Response &res
             limit_goal[3] = req.coordinates[1].y; // y_max
 
             res.num_goal = num_agent;
-            // rvo->randomOnceGoal(limit_goal);
+            rvo->randomOnceGoal(limit_goal);
             std::cout << "Current number of agent: " << num_agent << std::endl;
             return true;
         }

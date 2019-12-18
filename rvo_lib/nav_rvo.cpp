@@ -72,6 +72,8 @@ void RVOPlanner::randomOnceGoal(const float limit_goal[4])
         int rand = ur(e);
     
         goals[i] = (Vector2(x, y));
+
+        std::cout<< "random once successfully" <<std::endl;
     }
        
 }
