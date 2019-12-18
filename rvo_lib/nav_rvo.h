@@ -27,6 +27,7 @@ namespace RVO {
 
         void setGoal();
         void randGoal(const float limit_goal[4], const std::string &model="default");
+        void randomOnceGoal(const float limit_goal[4]);
         void setGoal(std::vector<geometry_msgs::Point> set_goals);
         void setInitial();
         void setPreferredVelocities();
