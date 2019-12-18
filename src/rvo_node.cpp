@@ -23,7 +23,7 @@ int main(int argc, char **argv)
     }
 
     rvo = new RVO::RVOPlanner("gazebo");
-    rvo->setupScenario(4.0f, 10, 18.0f, 5.0f, 0.25f, 0.3f);
+    rvo->setupScenario(4.0f, 10, 10.0f, 5.0f, 0.25f, 0.3f);
     rvo_goals_init();
     while (ros::ok())
     {
@@ -68,7 +68,7 @@ bool set_goals(rvo_ros::SetGoals::Request &req, rvo_ros::SetGoals::Response &res
             limit_goal[3] = req.coordinates[1].y; // y_max
 
             res.num_goal = num_agent;
-            rvo->randomOnceGoal(limit_goal);
+            // rvo->randomOnceGoal(limit_goal);
             std::cout << "Current number of agent: " << num_agent << std::endl;
             return true;
         }

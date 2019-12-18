@@ -142,7 +142,7 @@ void RVOPlanner::updateState_gazebo(gazebo_msgs::ModelStates::ConstPtr model_msg
         int num = models_name.size();
         int count = 0;
 
-        sim->agents_.clear();
+        // sim->agents_.clear();
 
         for (int i = 0; i < num; i++)
         {
@@ -156,10 +156,10 @@ void RVOPlanner::updateState_gazebo(gazebo_msgs::ModelStates::ConstPtr model_msg
                 float obs_x = model_msg->pose[agent_index].position.x;
                 float obs_y = model_msg->pose[agent_index].position.y;
 
-//                if (IfInitial)
-//                    sim->agents_[count]->position_ = RVO::Vector2(obs_x, obs_y);
-//                else
-                sim->addAgent(RVO::Vector2(obs_x, obs_y));
+               if (IfInitial)
+                   sim->agents_[count]->position_ = RVO::Vector2(obs_x, obs_y);
+               else
+                   sim->addAgent(RVO::Vector2(obs_x, obs_y));
 
                 count++;
                 // sim->agents_[i]->quater = model_msg->pose[agent_index].orientation;
