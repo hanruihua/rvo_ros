@@ -6,7 +6,7 @@ int main(int argc, char **argv)
     ros::init(argc, argv, "rvo_node");
     ros::NodeHandle n;
     rvo_node_pub = n.advertise<gazebo_msgs::ModelStates>("rvo_vel", 1000);
-    ros::Subscriber sub = n.subscribe("/rvo/model_states", 1000, rvo_velCallback);
+    ros::Subscriber sub = n.subscribe("/rvo/model_states", 100, rvo_velCallback);
     ros::ServiceServer service = n.advertiseService("set_rvo_goals", set_goals);
     ros::Rate loop_rate(10);
 
@@ -96,6 +96,7 @@ void rvo_goals_init()
 void rvo_velCallback(const gazebo_msgs::ModelStates::ConstPtr &sub_msg)
 {
     // std::cout<<num_agent<<std::endl;
+    
     rvo->updateState_gazebo(sub_msg); // read the message
     if (motion_model == "default")
         rvo->setGoal(rvo_goals);

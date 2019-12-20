@@ -9,6 +9,7 @@
 #include <string>
 #include "../rvo_lib/nav_rvo.h"
 #include "rvo_ros/SetGoals.h"
+#include "master_msgs/global_info.h"
 
 const int num_max = 10;
 int num_agent = 0;
@@ -23,6 +24,7 @@ RVO::RVOPlanner* rvo;
 std::string motion_model = "default";
 
 void rvo_velCallback(const gazebo_msgs::ModelStates::ConstPtr& sub_msg);
+
 bool set_goals(rvo_ros::SetGoals::Request &req, rvo_ros::SetGoals::Response &res);
 void rvo_goals_init();
 float limit_goal[4];
