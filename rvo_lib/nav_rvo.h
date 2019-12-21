@@ -41,7 +41,7 @@ namespace RVO {
         std::vector <RVO::Vector2> goals;
         bool IfInitial = false;
         std::vector<RVO::Vector2 *> newVelocities;
-        float goal_threshold = 0.05;
+        float goal_threshold = 0.04;
 
         friend class Agent;
         friend class KdTree;

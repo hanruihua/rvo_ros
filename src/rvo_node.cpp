@@ -1,5 +1,7 @@
 #include "rvo_node.h"
 
+int cout_flag = 0;
+
 int main(int argc, char **argv)
 {
 
@@ -8,7 +10,7 @@ int main(int argc, char **argv)
     rvo_node_pub = n.advertise<gazebo_msgs::ModelStates>("rvo_vel", 1000);
     ros::Subscriber sub = n.subscribe("/rvo/model_states", 100, rvo_velCallback);
     ros::ServiceServer service = n.advertiseService("set_rvo_goals", set_goals);
-    ros::Rate loop_rate(10);
+    ros::Rate loop_rate(50);
 
     if ((argc > 1) && (argc % 2 == 1))
     {
@@ -23,11 +25,14 @@ int main(int argc, char **argv)
     }
 
     rvo = new RVO::RVOPlanner("gazebo");
-    rvo->setupScenario(4.0f, 10, 10.0f, 5.0f, 0.25f, 0.3f);
+    rvo->setupScenario(4.0f, 10, 10.0f, 5.0f, 0.2f, 0.2f);
     rvo_goals_init();
     while (ros::ok())
     {
         ros::spinOnce();
+        cout_flag++;
+        if (cout_flag > 2500)
+            std::cout<<"waiting for message of model_states"<<std::endl;
         loop_rate.sleep();
     }
 }
@@ -96,7 +101,8 @@ void rvo_goals_init()
 void rvo_velCallback(const gazebo_msgs::ModelStates::ConstPtr &sub_msg)
 {
     // std::cout<<num_agent<<std::endl;
-    
+    cout_flag = 0;
+
     rvo->updateState_gazebo(sub_msg); // read the message
     if (motion_model == "default")
         rvo->setGoal(rvo_goals);
