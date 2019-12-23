@@ -11,7 +11,6 @@
 #include <string>
 #include "../rvo_lib/nav_rvo.h"
 #include "rvo_ros/SetGoals.h"
-#include "rvo_ros/rvo_vel.h"
 #include "gazebo_msgs/WorldState.h"
 #include "gazebo_msgs/ModelStates.h"
 

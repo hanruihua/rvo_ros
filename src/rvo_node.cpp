@@ -1,6 +1,5 @@
 #include "rvo_node.h"
 
-int cout_flag = 0;
 uint64_t seq = 0;
 int main(int argc, char **argv)
 {
@@ -105,8 +104,8 @@ void rvo_goals_init()
 void rvo_velCallback(const gazebo_msgs::ModelStates::ConstPtr &sub_msg)
 {
     // std::cout<<num_agent<<std::endl;
-    cout_flag = 0;
     seq++;
+    int count_vel = 0;
     rvo->updateState_gazebo(sub_msg); // read the message
     if (motion_model == "default")
         rvo->setGoal(rvo_goals);
