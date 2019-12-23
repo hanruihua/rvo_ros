@@ -1,5 +1,8 @@
 #include "rvo_node.h"
 
+// publish topic: /rvo_vel; type gazebo_msgs::WorldState
+// subscribe topic: /rvo/model_states; type: gazebo_msgs::ModelStates
+
 int cout_flag = 0;
 int seq = 0;
 int main(int argc, char **argv)
@@ -23,10 +26,17 @@ int main(int argc, char **argv)
             rvo_goals.push_back(point);
         }
     }
+    else
+    {
+        ROS_INFO("No input, Using default position 0 1 0 2 ....0 10 ");
+    }
 
     rvo = new RVO::RVOPlanner("gazebo");
     rvo->setupScenario(4.0f, 10, 10.0f, 5.0f, 0.2f, 0.2f);
     rvo_goals_init();
+
+    std::cout<<"Configure completely"<<std::endl;
+
     while (ros::ok())
     {
         ros::spinOnce();
