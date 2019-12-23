@@ -1,13 +1,13 @@
 #include "rvo_node.h"
 
 int cout_flag = 0;
-
+uint64_t seq = 0;
 int main(int argc, char **argv)
 {
 
     ros::init(argc, argv, "rvo_node");
     ros::NodeHandle n;
-    rvo_node_pub = n.advertise<gazebo_msgs::ModelStates>("rvo_vel", 1000);
+    rvo_node_pub = n.advertise<gazebo_msgs::WorldState>("rvo_vel", 1000);
     ros::Subscriber sub = n.subscribe("/rvo/model_states", 100, rvo_velCallback);
     ros::ServiceServer service = n.advertiseService("set_rvo_goals", set_goals);
     ros::Rate loop_rate(50);
@@ -102,7 +102,7 @@ void rvo_velCallback(const gazebo_msgs::ModelStates::ConstPtr &sub_msg)
 {
     // std::cout<<num_agent<<std::endl;
     cout_flag = 0;
-
+    seq++;
     rvo->updateState_gazebo(sub_msg); // read the message
     if (motion_model == "default")
         rvo->setGoal(rvo_goals);
@@ -116,7 +116,13 @@ void rvo_velCallback(const gazebo_msgs::ModelStates::ConstPtr &sub_msg)
 
     auto models_name = sub_msg->name;
     int total_num = models_name.size();
+    
+    std_msgs::Header header;
+    header.seq = seq;
+    header.stamp = ros::Time::now();
+    header.frame_id = "/world";
 
+    msg_pub.header = header;
     msg_pub.name.clear();
     msg_pub.twist.clear();
     msg_pub.pose.clear();
