@@ -11,7 +11,9 @@
 #include <string>
 #include "../rvo_lib/nav_rvo.h"
 #include "rvo_ros/SetGoals.h"
-#include "master_msgs/global_info.h"
+#include "rvo_ros/rvo_vel.h"
+#include "gazebo_msgs/WorldState.h"
+#include "gazebo_msgs/ModelStates.h"
 
 const int num_max = 10;
 int num_agent = 0;

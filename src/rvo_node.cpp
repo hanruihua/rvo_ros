@@ -23,16 +23,20 @@ int main(int argc, char **argv)
             rvo_goals.push_back(point);
         }
     }
+    else
+    {
+        ROS_INFO("No input, Using default position 0 1 0 2 ....0 10 ");
+    }
 
     rvo = new RVO::RVOPlanner("gazebo");
     rvo->setupScenario(4.0f, 10, 10.0f, 5.0f, 0.2f, 0.2f);
     rvo_goals_init();
+
+    std::cout<<"Configure completely"<<std::endl;
+
     while (ros::ok())
     {
         ros::spinOnce();
-        cout_flag++;
-        if (cout_flag > 2500)
-            std::cout<<"waiting for message of model_states"<<std::endl;
         loop_rate.sleep();
     }
 }
@@ -124,8 +128,10 @@ void rvo_velCallback(const gazebo_msgs::ModelStates::ConstPtr &sub_msg)
 
     msg_pub.header = header;
     msg_pub.name.clear();
-    msg_pub.twist.clear();
     msg_pub.pose.clear();
+    msg_pub.twist.clear();
+    
+    msg_pub.header = header;
 
     num_agent = new_velocities.size();
 
@@ -135,43 +141,36 @@ void rvo_velCallback(const gazebo_msgs::ModelStates::ConstPtr &sub_msg)
         copy_num_agent = num_agent;
     }
 
-    int count = 0;
-
     for (int i = 0; i < total_num; i++)
     {
         geometry_msgs::Twist new_vel;
-        geometry_msgs::Pose rvo_pose;
+        geometry_msgs::Pose cur_pose;
+
         std::string agent_name = "agent" + std::to_string(i + 1);
 
         auto iter_agent = std::find(models_name.begin(), models_name.end(), agent_name);
-        int agent_index = iter_agent - models_name.begin();
+        int iter_index = iter_agent - models_name.begin();
 
+        
         if (iter_agent != models_name.end())
         {
-            rvo_pose = sub_msg->pose[agent_index];
-
-            float x = new_velocities[count]->x();
-            float y = new_velocities[count]->y();
-
-            // float speed = sqrt(x * x + y * y);
-
-            // float ratio = vel_ratio(speed, 0.2f, 0.3f);
+            
+            float x = new_velocities[count_vel]->x();
+            float y = new_velocities[count_vel]->y();
 
             new_vel.linear.x = x;
             new_vel.linear.y = y;
 
+            cur_pose = sub_msg->pose[iter_index];
+
             msg_pub.name.push_back(agent_name);
             msg_pub.twist.push_back(new_vel);
-            msg_pub.pose.push_back(rvo_pose);
+            msg_pub.pose.push_back(cur_pose);
 
-            count++;
+            count_vel++;
             std::cout << "Current " << agent_name << std::endl;
         }
     }
     rvo_node_pub.publish(msg_pub);
 }
 
-float vel_ratio(float vel, float lo, float hi)
-{
-    return (vel < lo) ? lo / vel : (vel > hi) ? hi / vel : 1;
-}

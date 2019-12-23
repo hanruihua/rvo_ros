@@ -23,6 +23,11 @@ add_service_files(
   FILES SetGoals.srv
 )
 
+# add_message_files(
+#         FILES
+#         rvo_vel.msg
+# )
+
 generate_messages(
   DEPENDENCIES
   geometry_msgs
