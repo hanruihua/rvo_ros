@@ -5,11 +5,11 @@
 #include "geometry_msgs/Twist.h"
 #include "geometry_msgs/Pose.h"
 #include "geometry_msgs/Point.h"
-#include "gazebo_msgs/ModelStates.h"
 #include <string>
 #include "../rvo_lib/nav_rvo.h"
 #include "rvo_ros/SetGoals.h"
-#include "master_msgs/global_info.h"
+#include "rvo_ros/rvo_vel.h"
+#include "gazebo_msgs/WorldState.h"
 
 const int num_max = 10;
 int num_agent = 0;
@@ -17,7 +17,7 @@ int copy_num_agent = 1;
 float vel_ratio(float vel, float lo, float hi);
 // geometry_msgs::Twist *list_obs_twist = new geometry_msgs::Twist();
 ros::Publisher rvo_node_pub;
-gazebo_msgs::ModelStates msg_pub;
+gazebo_msgs::WorldState msg_pub;
 std::vector<geometry_msgs::Point> rvo_goals;
 
 RVO::RVOPlanner* rvo;
