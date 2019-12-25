@@ -157,9 +157,15 @@ void RVOPlanner::updateState_gazebo(gazebo_msgs::ModelStates::ConstPtr model_msg
             {
                 float obs_x = model_msg->pose[agent_index].position.x;
                 float obs_y = model_msg->pose[agent_index].position.y;
+                float vel_x = model_msg->twist[agent_index].linear.x;
+                float vel_y = model_msg->twist[agent_index].linear.y;
 
                if (IfInitial)
+               {
                    sim->agents_[count]->position_ = RVO::Vector2(obs_x, obs_y);
+                   sim->agents_[count]->velocity_ = RVO::Vector2(vel_x, vel_y);
+               }
+                   
                else
                    sim->addAgent(RVO::Vector2(obs_x, obs_y));
 
