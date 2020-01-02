@@ -17,7 +17,9 @@ This ros package is derived from the ORCA library ([lib](http://gamma.cs.unc.edu
 
 ## Usage
 
-> rosrun rvo_ros rvo_node
+> rosrun rvo_ros rvo_node args
+
+args: the coordinates of init point. default 0,1 0,2 ...0 10
 
 ## Topics
 
@@ -27,7 +29,7 @@ This ros package is derived from the ORCA library ([lib](http://gamma.cs.unc.edu
 
 - Published Topic
 
-/rvo_vel ([gazebo_msgs/ModelStates](http://docs.ros.org/jade/api/gazebo_msgs/html/msg/ModelStates.html))
+/rvo_vel ([gazebo_msgs/WorldStates](http://docs.ros.org/jade/api/gazebo_msgs/html/msg/WorldState.html))
 
 ## Service
 
@@ -40,7 +42,7 @@ This ros package is derived from the ORCA library ([lib](http://gamma.cs.unc.edu
 
 - example:
     rosrun rvo_ros set_goals_client "default" 1 1 1 4 4 4 4 1
-    rosrun rvo_ros set_goals_client "random" 0 5 1 4
+    rosrun rvo_ros set_goals_client "random" 0 5 1 4  
 
 
 ## Overview ([[paper]](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.162.265&rep=rep1&type=pdf))
