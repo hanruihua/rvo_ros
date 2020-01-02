@@ -1,0 +1,4 @@
+4
+6: rosrun rvo_ros set_goals_client "default" 3 3 3 5 5 3 5 5 7 3 7 5
+8: rosrun
+10: 
