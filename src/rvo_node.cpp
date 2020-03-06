@@ -28,7 +28,8 @@ int main(int argc, char **argv)
     }
 
     rvo = new RVO::RVOPlanner("gazebo");
-    rvo->setupScenario(4.0f, 10, 10.0f, 5.0f, 0.3f, 0.2f);
+    rvo->setupScenario(4.0f, 10, 10.0f, 5.0f, 0.3f, 0.2f);   // for exp
+    // rvo->setupScenario(4.0f, 10, 10.0f, 5.0f, 0.3f, 0.2f); //for gazebo
     rvo_goals_init();
 
     std::cout<<"Configure completely"<<std::endl;
