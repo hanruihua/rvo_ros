@@ -27,8 +27,20 @@ int main(int argc, char **argv)
         ROS_INFO("No input, Using default position 0 1 0 2 ....0 10 ");
     }
 
+    double neighborDist, maxNeighbors, timeHorizon, timeHorizonObst, radius, maxSpeed, goal_threshold;
+
+    n.param<double>("neighborDist", neighborDist, 4);
+    n.param<double>("maxNeighbors", maxNeighbors, 10);
+    n.param<double>("timeHorizon", timeHorizon, 10);
+    n.param<double>("timeHorizonObst", timeHorizonObst, 5);
+    n.param<double>("radius", radius, 0.3);
+    n.param<double>("maxSpeed", maxSpeed, 0.2);
+    n.param<double>("goal_threshold", goal_threshold, 0.01);
+
     rvo = new RVO::RVOPlanner("gazebo");
-    rvo->setupScenario(4.0f, 10, 10.0f, 5.0f, 0.3f, 0.2f);   // for exp
+    
+    rvo->goal_threshold = goal_threshold;
+    rvo->setupScenario(neighborDist, maxNeighbors, timeHorizon, timeHorizonObst, radius, maxSpeed);   // for exp
     // rvo->setupScenario(4.0f, 10, 10.0f, 5.0f, 0.3f, 0.2f); //for gazebo
     rvo_goals_init();
 

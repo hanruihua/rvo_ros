@@ -14,7 +14,7 @@
 #include "gazebo_msgs/WorldState.h"
 #include "gazebo_msgs/ModelStates.h"
 
-const int num_max = 10;
+const int num_max = 30;
 int num_agent = 0;
 int copy_num_agent = 1;
 float vel_ratio(float vel, float lo, float hi);
