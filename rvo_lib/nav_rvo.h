@@ -33,7 +33,8 @@ namespace RVO {
         void setPreferredVelocities();
 
         std::vector<RVO::Vector2*>  step();
-
+        float goal_threshold = 0.03;
+        
     private:
 
         RVO::RVOSimulator* sim;
@@ -41,7 +42,7 @@ namespace RVO {
         std::vector <RVO::Vector2> goals;
         bool IfInitial = false;
         std::vector<RVO::Vector2 *> newVelocities;
-        float goal_threshold = 0.03;
+        
 
         friend class Agent;
         friend class KdTree;
