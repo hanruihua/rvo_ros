@@ -27,6 +27,8 @@ args: the coordinates of init point. default 0,1 0,2 ...0 10
 
 /rvo/model_states ([gazebo_msgs/ModelStates](http://docs.ros.org/jade/api/gazebo_msgs/html/msg/ModelStates.html))
 
+**attention**: only the model name which is like the 'agent+num' style, for example, agent1, agent2, can be regarded as the agent model.
+
 - Published Topic
 
 /rvo_vel ([gazebo_msgs/WorldStates](http://docs.ros.org/jade/api/gazebo_msgs/html/msg/WorldState.html))
