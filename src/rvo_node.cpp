@@ -128,6 +128,8 @@ void rvo_velCallback(const gazebo_msgs::ModelStates::ConstPtr &sub_msg)
     rvo->setInitial();
     rvo->setPreferredVelocities();
 
+    arrived = rvo->arrived();
+
     std::vector<RVO::Vector2 *> new_velocities = rvo->step();
 
     auto models_name = sub_msg->name;

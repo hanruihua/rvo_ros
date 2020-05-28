@@ -17,6 +17,7 @@
 const int num_max = 30;
 int num_agent = 0;
 int copy_num_agent = 1;
+bool arrived = false;
 float vel_ratio(float vel, float lo, float hi);
 // geometry_msgs::Twist *list_obs_twist = new geometry_msgs::Twist();
 ros::Publisher rvo_node_pub;
