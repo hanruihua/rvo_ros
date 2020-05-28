@@ -115,6 +115,21 @@ void RVOPlanner::randGoal(const float limit_goal[4], const std::string &model)
     }
 }
 
+bool RVOPlanner::arrived()
+{
+    bool reach = true;
+
+    for (size_t i = 0; i < sim->getNumAgents(); ++i)
+    {
+        if (absSq(goals[i] - sim->getAgentPosition(i)) >= goal_threshold)
+            reach = false;
+    }
+
+    return reach;
+}
+
+
+
 void RVOPlanner::setInitial()
 {
     IfInitial = (!goals.empty()) && (!sim->agents_.empty());
