@@ -54,5 +54,8 @@ target_link_libraries(set_goals_client ${catkin_LIBRARIES})
 add_dependencies(set_goals_client ${${PROJECT_NAME}_EXPORTED_TARGETS})
 # add_dependencies(set_goals_client )
 
+add_executable(formation src/formation.cpp)
+target_link_libraries(formation ${catkin_LIBRARIES})
+add_dependencies(formation ${${PROJECT_NAME}_EXPORTED_TARGETS})
 
 #target_link_libraries(rvo_test RVO)
