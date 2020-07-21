@@ -4,9 +4,11 @@
 
 This ros package is derived from the ORCA library ([lib](http://gamma.cs.unc.edu/RVO2/)).
 
+![](https://github.com/hanruihua/rvo_ros/blob/master/simulation/rvo_sim.gif)
+
 ## Environment
 
-- Ubuntu 18.0
+- Ubuntu 18.04
 - ros Melodic
 
 ## Install
