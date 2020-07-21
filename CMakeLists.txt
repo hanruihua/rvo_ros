@@ -10,7 +10,7 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   message_generation
 )
-
+find_package(gazebo REQUIRED)
 include_directories(
  include
   ${catkin_INCLUDE_DIRS}
@@ -43,6 +43,7 @@ CATKIN_DEPENDS roscpp message_runtime geometry_msgs std_msgs
 
 # file(GLOB RVO_LIB_DIRS "rvo_lib/nav_rvo.cpp")
 
+add_subdirectory(simulation/plugins)
 add_library(rvolib SHARED rvo_lib/nav_rvo.cpp rvo_lib/RVOSimulator.cpp rvo_lib/Agent.cpp rvo_lib/KdTree.cpp rvo_lib/Obstacle.cpp)
 
 add_executable(rvo_node src/rvo_node.cpp)
