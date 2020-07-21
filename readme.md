@@ -1,4 +1,4 @@
-# rvo_ros package
+# reciprocal velocity obstacle ros library
 
 ## Introduction
 
