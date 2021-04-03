@@ -46,10 +46,12 @@ for example:
     - model:
         - "default": specify a series of point as goals for the agents. The number of goals should be same as the number of agents: 1 1 2 3 4 2.
         - "random": allocate the goals randomly with limit along x and y, only for number: min_x, max_x, min_y, max_y.
+        - "circle": allocate the goals with circle shape: circle_point_x, circle_point_y, radius, flag. flag is to set the reverse mode
 
 - example:
     >rosrun rvo_ros set_goals_client default 1 1 1 4 4 4 4 1  
     >rosrun rvo_ros set_goals_client random 0 5 1 4   
+    >rosrun rvo_ros set_goals_client circle 4 4 4 0 
 
 ## Topics
 
