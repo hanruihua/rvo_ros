@@ -177,6 +177,11 @@ void rvo_velCallback(const gazebo_msgs::ModelStates::ConstPtr &sub_msg)
 
     arrived = rvo->arrived();
 
+    // if arrived:
+
+
+    
+
     std::vector<RVO::Vector2 *> new_velocities = rvo->step();
 
     auto models_name = sub_msg->name;
