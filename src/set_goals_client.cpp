@@ -62,6 +62,31 @@ int main(int argc, char **argv)
         std::cout<<"limit y"<<"["<<point1.y<<","<<point2.y<<"]"<<std::endl;
     }
 
+    else if (srv.request.model == "circle")
+    {
+        if (args_num < 3)
+        {
+            std::cout << "The num of coordinates is wrong" << std::endl;
+            return 1;
+        }
+        
+        geometry_msgs::Point point1;
+        geometry_msgs::Point point2;
+
+        // circle point
+        point1.x = atof(argv[2]);
+        point1.y = atof(argv[3]);
+
+        // radius
+        point2.x = atof(argv[4]);
+        point2.y = atof(argv[5]);
+
+        srv.request.coordinates.push_back(point1);
+        srv.request.coordinates.push_back(point2);
+        
+    }
+
+
     if (client.call(srv))
     {
         ROS_INFO("call service successfully, number of goals: %ld", srv.response.num_goal);
