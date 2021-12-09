@@ -117,6 +117,41 @@ bool set_goals(rvo_ros::SetGoals::Request &req, rvo_ros::SetGoals::Response &res
         return true;
     }
 
+    if (req.model == "circle_spin")
+    {
+        motion_model = req.model;
+
+        if (!rvo_goals.empty())
+            rvo_goals.clear();
+
+        float circle_point_x =  req.coordinates[0].x;
+        float circle_point_y =  req.coordinates[0].y;
+        float radius=req.coordinates[1].x;
+        float pi = 3.1415926;
+
+        float theta_step = 2 * pi / num_agent;
+        
+        float theta = 0;
+        
+        while (theta < 2 * pi)
+        {   
+            
+        geometry_msgs::Point point;
+        point.x = circle_point_x + cos(theta) * radius;
+        point.y = circle_point_y + sin(theta) * radius;
+
+        rvo_goals.push_back(point);
+
+        theta = theta + theta_step;
+        }
+
+        res.num_goal = rvo_goals.size();
+
+        return true;
+    }
+
+
+
     if (req.model == "random")
     {
         motion_model = req.model;
@@ -171,16 +206,29 @@ void rvo_velCallback(const gazebo_msgs::ModelStates::ConstPtr &sub_msg)
         rvo->randGoal(limit_goal, "default");
     else if (motion_model == "circle")
         rvo->setGoal(rvo_goals);
+    else if (motion_model == "circle_spin")
+        rvo->setGoal(rvo_goals);
 
     rvo->setInitial();
     rvo->setPreferredVelocities();
 
-    arrived = rvo->arrived();
+    bool arrive_flag = rvo->arrived();
 
-    // if arrived:
+    if (motion_model == "circle_spin")
+    {   
+        if (arrive_flag == true)
 
+        {
+            geometry_msgs::Point temp_first = rvo_goals[0];
 
-    
+            for (int i=0;i<rvo_goals.size()-1;i++)
+                {
+                    rvo_goals[i] = rvo_goals[i+1];
+                }
+
+            rvo_goals[rvo_goals.size()-1] = temp_first;
+        }
+    }   
 
     std::vector<RVO::Vector2 *> new_velocities = rvo->step();
 

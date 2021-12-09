@@ -86,6 +86,30 @@ int main(int argc, char **argv)
         
     }
 
+    else if (srv.request.model == "circle_spin")
+    {
+        if (args_num < 2)
+        {
+            std::cout << "The num of coordinates is wrong" << std::endl;
+            return 1;
+        }
+        
+        geometry_msgs::Point point1;
+        geometry_msgs::Point point2;
+
+        // circle point
+        point1.x = atof(argv[2]);
+        point1.y = atof(argv[3]);
+
+        // radius
+        point2.x = atof(argv[4]);
+        point2.y = atof(argv[4]);
+
+        srv.request.coordinates.push_back(point1);
+        srv.request.coordinates.push_back(point2);
+        
+    }
+
 
     if (client.call(srv))
     {
