@@ -21,6 +21,7 @@ This ros package is derived from the ORCA library ([lib](http://gamma.cs.unc.edu
 
 > export GAZEBO_PLUGIN_PATH=${GAZEBO_PLUGIN_PATH}:~/catkin_ws/devel/lib
 
+Please write this line in the file .bashrc or .zshrc
 
 ## Usage
 
