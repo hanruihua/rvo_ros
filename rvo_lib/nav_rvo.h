@@ -23,7 +23,7 @@ namespace RVO {
 
         void setupScenario(float neighborDist, size_t maxNeighbors, float timeHorizon, float timeHorizonObst, float radius, float maxSpeed);
 
-        void updateState_gazebo(gazebo_msgs::ModelStates::ConstPtr model_msg);
+        void updateState_gazebo(gazebo_msgs::ModelStates::ConstPtr model_msg, std::string agent_name);
 
         void setGoal();
         void randGoal(const float limit_goal[4], const std::string &model="default");

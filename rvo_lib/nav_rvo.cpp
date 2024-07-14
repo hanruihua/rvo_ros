@@ -151,7 +151,7 @@ void RVOPlanner::setPreferredVelocities()
     }
 }
 
-void RVOPlanner::updateState_gazebo(gazebo_msgs::ModelStates::ConstPtr model_msg)
+void RVOPlanner::updateState_gazebo(gazebo_msgs::ModelStates::ConstPtr model_msg, std::string agent_name)
 {
     if (simulator == "gazebo")
     {
@@ -163,9 +163,10 @@ void RVOPlanner::updateState_gazebo(gazebo_msgs::ModelStates::ConstPtr model_msg
 
         for (int i = 0; i < num; i++)
         {
-            std::string agent_name = "agent" + std::to_string(i + 1);
+            // std::string full_agent_name = agent_name + std::to_string(i+1);
+            std::string full_agent_name = agent_name + std::to_string(i);
 
-            auto iter_agent = std::find(models_name.begin(), models_name.end(), agent_name);
+            auto iter_agent = std::find(models_name.begin(), models_name.end(), full_agent_name);
             int agent_index = iter_agent - models_name.begin();
 
             if (iter_agent != models_name.end())

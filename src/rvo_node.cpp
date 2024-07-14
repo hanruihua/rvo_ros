@@ -1,6 +1,8 @@
 #include "rvo_node.h"
 
 uint64_t seq = 0;
+std::string agent_name;
+
 int main(int argc, char **argv)
 {
 
@@ -36,6 +38,7 @@ int main(int argc, char **argv)
     n.param<double>("radius", radius, 0.3);
     n.param<double>("maxSpeed", maxSpeed, 0.2);
     n.param<double>("goal_threshold", goal_threshold, 0.01);
+    n.param<std::string>("agent_name", agent_name, "agent");
 
     rvo = new RVO::RVOPlanner("gazebo");
     
@@ -170,7 +173,7 @@ bool set_goals(rvo_ros::SetGoals::Request &req, rvo_ros::SetGoals::Response &res
 
             res.num_goal = num_agent;
             rvo->randomOnceGoal(limit_goal);
-            std::cout << "Current number of agent: " << num_agent << std::endl;
+            // std::cout << "Current number of agent: " << num_agent << std::endl;
             return true;
         }
     }
@@ -196,10 +199,10 @@ void rvo_goals_init()
 
 void rvo_velCallback(const gazebo_msgs::ModelStates::ConstPtr &sub_msg)
 {
-    std::cout<<num_agent<<std::endl;
+    // std::cout<<num_agent<<std::endl;
     seq++;
     int count_vel = 0;
-    rvo->updateState_gazebo(sub_msg); // read the message
+    rvo->updateState_gazebo(sub_msg, agent_name); // read the message
     if (motion_model == "default")
         rvo->setGoal(rvo_goals);
     else if (motion_model == "random")
@@ -251,7 +254,7 @@ void rvo_velCallback(const gazebo_msgs::ModelStates::ConstPtr &sub_msg)
 
     if (num_agent != copy_num_agent)
     {
-        std::cout << "The num of agents is" + std::to_string(num_agent) << std::endl;
+        std::cout << "The num of agents is " + std::to_string(num_agent) << std::endl;
         copy_num_agent = num_agent;
     }
 
@@ -260,9 +263,11 @@ void rvo_velCallback(const gazebo_msgs::ModelStates::ConstPtr &sub_msg)
         geometry_msgs::Twist new_vel;
         geometry_msgs::Pose cur_pose;
 
-        std::string agent_name = "agent" + std::to_string(i + 1);
-
-        auto iter_agent = std::find(models_name.begin(), models_name.end(), agent_name);
+        // std::string agent_name = "agent" + std::to_string(i + 1);
+        // std::string full_agent_name = agent_name + std::to_string(i + 1);
+        std::string full_agent_name = agent_name + std::to_string(i);
+        
+        auto iter_agent = std::find(models_name.begin(), models_name.end(), full_agent_name);
         int iter_index = iter_agent - models_name.begin();
 
         
@@ -277,12 +282,12 @@ void rvo_velCallback(const gazebo_msgs::ModelStates::ConstPtr &sub_msg)
 
             cur_pose = sub_msg->pose[iter_index];
 
-            msg_pub.name.push_back(agent_name);
+            msg_pub.name.push_back(full_agent_name);
             msg_pub.twist.push_back(new_vel);
             msg_pub.pose.push_back(cur_pose);
 
             count_vel++;
-            std::cout << "Current " << agent_name << std::endl;
+            // std::cout << "Current " << full_agent_name << std::endl;
         }
     }
     rvo_node_pub.publish(msg_pub);

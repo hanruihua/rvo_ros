@@ -1,0 +1,106 @@
+<?xml version="1.0" ?>
+<sdf version="1.5">
+  <world name="default">
+
+    <!-- A global light source -->
+    <include>
+      <uri>model://sun</uri>
+    </include>
+
+    <!-- A ground plane -->
+    <include>
+      <uri>model://ground_plane</uri>
+    </include>
+
+    <!-- Testing the automatic population of objects -->
+    <population name="cross_population1">
+      <model name='cross'>
+        <link name='link'>
+          <inertial>
+            <pose>0 0 0.048275 0 -0 0</pose>
+            <mass>0.5</mass>
+            <inertia>
+              <ixx>0.00455435</ixx>
+              <ixy>0</ixy>
+              <ixz>0</ixz>
+              <iyy>0.00455435</iyy>
+              <iyz>0</iyz>
+              <izz>0.00833187</izz>
+            </inertia>
+          </inertial>
+          <collision name='collisionY'>
+            <pose>0 0 0.048275 1.5707 -0 0</pose>
+            <geometry>
+              <cylinder>
+                <length>0.3162</length>
+                <radius>0.0483</radius>
+              </cylinder>
+            </geometry>
+            <max_contacts>10</max_contacts>
+            <surface>
+              <contact>
+                <ode/>
+              </contact>
+              <bounce/>
+              <friction>
+                <torsional>
+                  <ode/>
+                </torsional>
+                <ode/>
+              </friction>
+            </surface>
+          </collision>
+          <collision name='collisionX'>
+            <pose>0 0 0.048275 0 1.5707 0</pose>
+            <geometry>
+              <cylinder>
+                <length>0.3162</length>
+                <radius>0.0483</radius>
+              </cylinder>
+            </geometry>
+            <max_contacts>10</max_contacts>
+            <surface>
+              <contact>
+                <ode/>
+              </contact>
+              <bounce/>
+              <friction>
+                <torsional>
+                  <ode/>
+                </torsional>
+                <ode/>
+              </friction>
+            </surface>
+          </collision>
+          <visual name='visual'>
+            <geometry>
+              <mesh>
+                <uri>model://cross_joint_part/meshes/cross_joint.dae</uri>
+              </mesh>
+            </geometry>
+            <material>
+              <script>
+                <uri>model://arm_part/materials/scripts</uri>
+                <uri>model://arm_part/materials/textures</uri>
+                <name>ArmPart/Diffuse</name>
+              </script>
+            </material>
+          </visual>
+          <self_collide>0</self_collide>
+          <enable_wind>0</enable_wind>
+          <kinematic>0</kinematic>
+        </link>
+        <pose>-4e-06 -0 0 0 -0 0</pose>
+        <plugin name='multi_obs' filename='libmulti_obs.so'/>
+      </model>
+      <pose>0 0 0 0 0 0</pose>
+      <box>
+        <size>5 5 0.01</size>
+      </box>
+      <model_count>10</model_count>
+      <distribution>
+        <type>random</type> 
+      </distribution>
+    </population>
+  </world>
+</sdf>
